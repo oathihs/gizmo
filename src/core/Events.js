@@ -1,7 +1,9 @@
 // Event
-import {toArray} from './utils'
-class Events {
+import { toArray } from '../utils/index'
+
+export class Events {
   constructor () {
+    this._class = 'Events'
     this._listeners = {}
   }
 
@@ -18,18 +20,13 @@ class Events {
   off (type, listener) {
     let listeners = this._listeners
     let list = listeners[type] || []
-    let index = list.findIndex(listener)
-    if (index !== -1) list.splice(index, 1)
+    list = list.filter(el => { return el !== listener })
   }
 
   emit (type) {
     let listeners = this._listeners
     let list = listeners[type] || []
     let args = toArray(arguments, 1)
-    list.forEach((listener) => {
-      listener.apply(this, args)
-    })
+    list.forEach(el => { el.apply(this, args) })
   }
 }
-
-export default Events
