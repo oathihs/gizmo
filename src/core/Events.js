@@ -20,7 +20,7 @@ export class Events {
   off (type, listener) {
     let listeners = this._listeners
     let list = listeners[type] || []
-    list = list.filter(el => { return el !== listener })
+    listeners[type] = list.filter(el => { return el !== listener })
   }
 
   emit (type) {
