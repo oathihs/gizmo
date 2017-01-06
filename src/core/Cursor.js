@@ -17,17 +17,25 @@ export class Cursor extends Events {
     this._scene = null
     this._plane = new Plane(new Vector3(0, 0, 1), 0)
     this._raycaster = new Raycaster()
-    this._mouse = new Vector2()
+    this._coords = new Vector2()
+    this._target = null
   }
 
-  get $mouseX () {
-    return this._mouse.x
+  // the scene this cursor installed on
+  get $scene () {
+    return this._scene
   }
 
-  get $mouseY () {
-    return this._mouse.y
+  // 2D coordinates of the mouse, in normalized device coordinates (NDC)---X and Y components should be between -1 and 1
+  get $coordsX () {
+    return this._coords.x
   }
 
+  get $coordsY () {
+    return this._coords.y
+  }
+
+  // the plane to instersect with
   get $plane () {
     return this._plane
   }
@@ -36,6 +44,12 @@ export class Cursor extends Events {
     this._plane = val 
   }
 
+  // the current target the mouse is over
+  get $target () {
+    return this._target
+  }
+
+  // mouseevent handlers
   set $onclick (fn) {
     this.on('click', fn)
   }
@@ -64,6 +78,7 @@ export class Cursor extends Events {
     this.on('mouseup', fn)
   }
 
+  // install cursor on the scene
   install (scene) {
     this._scene = scene
     let self = this
@@ -77,6 +92,7 @@ export class Cursor extends Events {
     return this
   }
 
+  // get projection on the plane
   project (plane) {
     plane = plane || this._plane
     return this._raycaster.ray.intersectPlane(plane)
@@ -88,9 +104,9 @@ export class Cursor extends Events {
     let canvas = scene.$dom
     let viewSize = scene.$data.size
 
-    self._mouse.x = (getMousePositionInElement(e).x / viewSize.width) * 2 - 1
-    self._mouse.y = -(getMousePositionInElement(e).y / viewSize.height) * 2 + 1
-    self._raycaster.setFromCamera(self._mouse, scene.$camera.$obj)
+    self._coords.x = (getMousePositionInElement(e).x / viewSize.width) * 2 - 1
+    self._coords.y = -(getMousePositionInElement(e).y / viewSize.height) * 2 + 1
+    self._raycaster.setFromCamera(self._coords, scene.$camera.$obj)
     self.emit('mousemove', e)
   }
 
@@ -118,47 +134,52 @@ export class Cursor extends Events {
     this.emit('mouseup', e)
   }
 
+  // check all intersection between the ray and the object with the descendants
   getIntersection (mesh) {
     return this._raycaster.intersectObject(mesh.$obj, true)
   }
 
+  // check if the ray hovers on the object, return boolean
   hovers (mesh) {
     let result = this.getIntersection(mesh).length > 0 ? true : false
     return result
   }
 
+  // track or do-not-track the object, depends on the 'trackable' property of the object
   track (mesh) {
     let isHovered = false
 
-    let mousemoveHandler = () => {
+    let mousemoveHandler = e => {
       if (this.hovers(mesh)) {
         document.body.style.cursor = 'pointer'
-        if (isHovered) mesh.emit('mousemove')
+        this._target = mesh
+        if (isHovered) mesh.emit('mousemove', e)
         else {
-          mesh.emit('mouseover')
+          mesh.emit('mouseover', e)
           isHovered = true
         }
       } else if (isHovered) {
+        this._target = null
         document.body.style.cursor = 'default'
-        mesh.emit('mouseout')
+        mesh.emit('mouseout', e)
         isHovered = false
       }
     }
 
-    let mousedownHandler = () => {
-      if (isHovered) mesh.emit('mousedown')
+    let mousedownHandler = e => {
+      if (isHovered) mesh.emit('mousedown', e)
     }
 
-    let mouseupHandler = () => {
-      if (isHovered) mesh.emit('mouseup')
+    let mouseupHandler = e => {
+      if (isHovered) mesh.emit('mouseup', e)
     }
 
-    let clickHandler = () => {
-      if (isHovered) mesh.emit('click')
+    let clickHandler = e => {
+      if (isHovered) mesh.emit('click', e)
     }
 
-    let dblclickHandler = () => {
-      if (isHovered) mesh.emit('dblclick')
+    let dblclickHandler = e => {
+      if (isHovered) mesh.emit('dblclick', e)
     }
 
     if (!mesh.$trackable) {
