@@ -15,6 +15,7 @@ export class OrthographicCamera extends Camera {
       config.camera.near,
       config.camera.far
     )
+    this._obj.name = 'Orthographic Camera'
     this.init()
   }
 }

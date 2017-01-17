@@ -35,6 +35,7 @@ export class Mesh extends Element {
     if (config && config.geometry && config.geometry.isGeometry) {
       this._geometry = config.geometry
       this._obj = new MeshNative(this._geometry, this._material)
+      this._obj.name = 'mesh'
       this._obj.geometry.center()
       this._class = 'Mesh'
     }

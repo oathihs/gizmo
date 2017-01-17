@@ -10,6 +10,7 @@ export class Box extends Mesh {
     super(config)
     this._geometry = config.geometry ? new BoxGeometry(config.geometry.width, config.geometry.height, config.geometry.depth) : new BoxGeometry(5, 5, 5)
     this._obj = new MeshNative(this._geometry, this._material)
+    this._obj.name = 'box'
     this._class = 'Box'
   }
 

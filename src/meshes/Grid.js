@@ -15,6 +15,7 @@ export class Grid extends Element {
     this._divisions = this._size / this._step
     this._scene = null
     this._obj = new GridHelper(size / 2, this._divisions, this._colors.colorCenterLine, this._colors.colorGrid)
+    this._obj.name = 'grid'
   }
 
   get $obj () {

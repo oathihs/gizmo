@@ -11,6 +11,7 @@ export class Rectangle extends Mesh {
     super(config)
     this._geometry = config.geometry ? new PlaneGeometry(config.geometry.width, config.geometry.height) : new PlaneGeometry(5, 5)
     this._obj = new MeshNative(this._geometry, this._material)
+    this._obj.name = 'rectangle'
     this._class = 'Rectangle'
   }
 

@@ -13,6 +13,7 @@ export class PerspectiveCamera extends Camera {
       config.camera.near,
       config.camera.far
     )
+    this._obj.name = 'Perspective Camera'
     this.init()
   }
 }

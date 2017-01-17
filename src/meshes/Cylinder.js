@@ -10,6 +10,7 @@ export class Cylinder extends Mesh {
     super(config)
     this._geometry = config.geometry ? new CylinderGeometry(config.geometry.radiusTop, config.geometry.radiusBottom, config.geometry.height) : new CylinderGeometry(5, 5, 5)
     this._obj = new MeshNative(this._geometry, this._material)
+    this._obj.name = 'cylinder'
     this._class = 'Cylinder'
   }
 

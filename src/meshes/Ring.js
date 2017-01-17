@@ -20,6 +20,7 @@ export class Ring extends Mesh {
       this._geometry = new RingGeometry(options.innerRadius, options.outerRadius, options.thetaSegments, options.phiSegments, options.thetaStart, options.thetaLength)
     } else this._geometry = new RingGeometry()
     this._obj = new MeshNative(this._geometry, this._material)
+    this._obj.name = 'ring'
     this._class = 'Rectangle'
   }
 

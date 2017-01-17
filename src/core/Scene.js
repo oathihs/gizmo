@@ -10,6 +10,7 @@ import { Cursor } from './Cursor'
 export class Scene {
   constructor () {
     this._obj = new SceneNative()
+    this._obj.name = 'scene'
     this._data = {}
     this._elements = []
     this._pickable = []
