@@ -8,7 +8,13 @@ import { Mesh } from './Mesh'
 export class Box extends Mesh {
   constructor (config) {
     super(config)
-    this._geometry = config.geometry ? new BoxGeometry(config.geometry.width, config.geometry.height, config.geometry.depth) : new BoxGeometry(5, 5, 5)
+
+    let options = {}
+    options.width = config.geometry.width || 5
+    options.height = config.geometry.height || 5
+    options.depth = config.geometry.depth || 5
+
+    this._geometry = new BoxGeometry(options.width, options.height, options.depth)
     this._obj = new MeshNative(this._geometry, this._material)
     this._obj.name = 'box'
     this._class = 'Box'
